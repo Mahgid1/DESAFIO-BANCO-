@@ -1,0 +1,258 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Banco Next</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f7;
+            color: #222;
+            margin: 0;
+            padding: 30px;
+        }
+
+        h1 {
+            background-color: #241044;
+            color: white;
+            text-align: center;
+            padding: 25px;
+            border-radius: 10px;
+        }
+
+        h2 {
+            color: #241044;
+        }
+
+        #saldo {
+            background-color: white;
+            color: #6c35b5;
+            font-size: 28px;
+            font-weight: bold;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+        }
+
+        select, input {
+            padding: 10px;
+            border: 1px solid #bbb;
+            border-radius: 5px;
+            font-size: 15px;
+            margin: 8px 0 15px;
+        }
+
+        button {
+            background-color: #6c35b5;
+            color: white;
+            padding: 12px 18px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 15px;
+        }
+
+        button:hover {
+            background-color: #4c2185;
+        }
+
+        #resultado {
+            background-color: white;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            min-height: 80px;
+            white-space: pre-wrap;
+            overflow-wrap: anywhere;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>Banco Next</h1>
+
+    <h2>Saldo atual</h2>
+    <p id="saldo">R$ 1.000,00</p>
+
+    <label for="operacao">Escolha uma operação:</label>
+    <br>
+
+    <select id="operacao">
+        <option value="consultar">Consultar saldo</option>
+        <option value="depositar">Depositar</option>
+        <option value="sacar">Sacar</option>
+        <option value="extrato">Ver extrato</option>
+    </select>
+
+    <br>
+
+    <label for="valor">Valor (R$):</label>
+    <br>
+
+    <input type="number" id="valor" step="1" placeholder="Digite o valor">
+
+    <br>
+
+    <button id="executar">Executar operação</button>
+
+    <h2>Resultado</h2>
+    <pre id="resultado">Bem-vindo ao Banco Next!</pre>
+
+    <script>
+        let saldo = 1000;
+
+        let historico = [
+            "Abertura da conta: R$ 1.000,00"
+        ];
+
+        const campoOperacao = document.getElementById("operacao");
+        const campoValor = document.getElementById("valor");
+        const campoSaldo = document.getElementById("saldo");
+        const campoResultado = document.getElementById("resultado");
+        const botao = document.getElementById("executar");
+
+        function formatarDinheiro(valor) {
+            return valor.toLocaleString("pt-BR", {
+                style: "currency",
+                currency: "BRL"
+            });
+        }
+
+        botao.addEventListener("click", function () {
+            const operacao = campoOperacao.value;
+            const entrada = campoValor.value;
+            const valor = Number(entrada);
+
+            let mensagem = "";
+
+            switch (operacao) {
+
+                case "consultar":
+                    mensagem =
+                        "Saldo disponível: " + formatarDinheiro(saldo);
+                    break;
+
+                case "depositar":
+
+                    if (
+                        entrada.trim() === "" ||
+                        !Number.isInteger(valor) ||
+                        valor <= 0
+                    ) {
+                        mensagem =
+                            "Erro: informe um valor inteiro maior que zero.";
+                    } else {
+                        saldo += valor;
+
+                        historico.push(
+                            "Depósito: +" + formatarDinheiro(valor)
+                        );
+
+                        mensagem =
+                            "Depósito de " + formatarDinheiro(valor) +
+                            " realizado com sucesso!\n" +
+                            "Novo saldo: " + formatarDinheiro(saldo);
+                    }
+
+                    break;
+
+                case "sacar":
+
+                    if (
+                        entrada.trim() === "" ||
+                        !Number.isInteger(valor) ||
+                        valor <= 0
+                    ) {
+                        mensagem =
+                            "Erro: informe um valor inteiro maior que zero.";
+
+                    } else if (valor % 10 !== 0) {
+                        mensagem =
+                            "Erro: o valor do saque deve ser múltiplo de 10.";
+
+                    } else if (valor > saldo) {
+                        mensagem = "Erro: saldo insuficiente.";
+
+                    } else {
+                        let restante = valor;
+
+                        let notas100 = 0;
+                        let notas50 = 0;
+                        let notas20 = 0;
+                        let notas10 = 0;
+
+                        while (restante >= 100) {
+                            restante -= 100;
+                            notas100++;
+                        }
+
+                        while (restante >= 50) {
+                            restante -= 50;
+                            notas50++;
+                        }
+
+                        while (restante >= 20) {
+                            restante -= 20;
+                            notas20++;
+                        }
+
+                        while (restante >= 10) {
+                            restante -= 10;
+                            notas10++;
+                        }
+
+                        saldo -= valor;
+
+                        historico.push(
+                            "Saque: -" + formatarDinheiro(valor)
+                        );
+
+                        const totalNotas =
+                            notas100 + notas50 + notas20 + notas10;
+
+                        mensagem =
+                            "Saque de " + formatarDinheiro(valor) +
+                            " realizado com sucesso!\n\n" +
+                            "Notas entregues:\n" +
+                            "R$ 100: " + notas100 + " nota(s)\n" +
+                            "R$ 50: " + notas50 + " nota(s)\n" +
+                            "R$ 20: " + notas20 + " nota(s)\n" +
+                            "R$ 10: " + notas10 + " nota(s)\n\n" +
+                            "Total de notas: " + totalNotas + "\n" +
+                            "Total sacado: " + formatarDinheiro(valor) + "\n" +
+                            "Saldo restante: " + formatarDinheiro(saldo);
+                    }
+
+                    break;
+
+                case "extrato":
+
+                    mensagem = "===== EXTRATO BANCO NEXT =====\n\n";
+
+                    for (let i = 0; i < historico.length; i++) {
+                        mensagem +=
+                            (i + 1) + ". " + historico[i] + "\n";
+                    }
+
+                    mensagem +=
+                        "\nSaldo atual: " + formatarDinheiro(saldo);
+
+                    break;
+
+                default:
+                    mensagem = "Erro: operação inválida.";
+            }
+
+            campoSaldo.textContent = formatarDinheiro(saldo);
+            campoResultado.textContent = mensagem;
+            campoValor.value = "";
+        });
+    </script>
+
+</body>
+</html>
+

@@ -1,0 +1,70 @@
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f2f2f7;
+    color: #222;
+    margin: 0;
+    padding: 30px;
+}
+
+h1 {
+    background-color: #241044;
+    color: white;
+    text-align: center;
+    padding: 25px;
+    border-radius: 10px;
+}
+
+h2 {
+    color: #241044;
+}
+
+body > p,
+body > label,
+body > select,
+body > input,
+body > button {
+    margin-bottom: 15px;
+}
+
+#saldo {
+    background-color: white;
+    color: #241044;
+    font-size: 28px;
+    font-weight: bold;
+    padding: 20px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+}
+
+select,
+input {
+    padding: 10px;
+    border: 1px solid #bbb;
+    border-radius: 5px;
+    font-size: 15px;
+}
+
+button {
+    background-color: #6c35b5;
+    color: white;
+    padding: 12px 18px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 15px;
+}
+
+button:hover {
+    background-color: #4c2185;
+}
+
+#resultado {
+    background-color: white;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    min-height: 80px;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}
